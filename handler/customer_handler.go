@@ -1,13 +1,11 @@
-package https
+package handler
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 
 	response "example.com/greetings/https/response"
 	"example.com/greetings/model"
-	"example.com/greetings/query"
 	services "example.com/greetings/services/customer"
 	"github.com/gin-gonic/gin"
 )
@@ -47,25 +45,25 @@ func (h *CustomerHandler) GetCustomers(c *gin.Context) {
 	response.SuccessResponse(c, "success", map[string]any{"list": customers, "total": total})
 }
 
-func InsertCustomer(c *gin.Context) {
-	var customer model.Customer
+// func InsertCustomer(c *gin.Context) {
+// 	var customer model.Customer
 
-	if err := c.BindJSON(&customer); err != nil {
-		log.Print("cannot read body:", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// 	if err := c.BindJSON(&customer); err != nil {
+// 		log.Print("cannot read body:", err)
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	db, err := sql.Open(dbDriver, dbSource)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		log.Print("cannot connect to db:", err)
-	}
+// 	db, err := sql.Open(dbDriver, dbSource)
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+// 		log.Print("cannot connect to db:", err)
+// 	}
 
-	var id = query.InsertCustomerToDB(db, customer)
+// 	var id = query.InsertCustomerToDB(db, customer)
 
-	c.JSON(http.StatusOK, gin.H{"id": id})
-}
+// 	c.JSON(http.StatusOK, gin.H{"id": id})
+// }
 
 // func UpdateCustomer(c *gin.Context) {
 // 	var getCustomer model.GetCustomerRequest
