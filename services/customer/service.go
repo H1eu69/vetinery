@@ -12,6 +12,7 @@ import (
 
 type ICustomerService interface {
 	GetCustomers(c *gin.Context, req model.GetCustomerRequest) ([]model.Customer, int, error)
+	InsertCustomers(c *gin.Context, req model.InsertCustomerRequest) (model.Customer, error)
 }
 
 type CustomerService struct {
@@ -35,4 +36,15 @@ func (service *CustomerService) GetCustomers(c *gin.Context, req model.GetCustom
 	customers, total, err := service.repo.GetCustomers(db, req)
 
 	return customers, total, err
+}
+
+func (servie *CustomerService) InsertCustomers(c *gin.Context, req model.InsertCustomerRequest) (model.Customer, error) {
+	db, err := sql.Open(_const.DbDriver, _const.DbSource)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return model.Customer{}, err
+	}
+	customer, err := servie.repo.InsertCustomers(db, req)
+
+	return *customer, err
 }

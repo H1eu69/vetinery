@@ -10,6 +10,7 @@ import (
 
 type ICustomerRepository interface {
 	GetCustomers(db *sql.DB, req model.GetCustomerRequest) ([]model.Customer, int, error)
+	InsertCustomers(db *sql.DB, req model.InsertCustomerRequest) (*model.Customer, error)
 }
 
 type CustomerRepository struct {
@@ -49,4 +50,17 @@ func (repo *CustomerRepository) GetCustomers(db *sql.DB, req model.GetCustomerRe
 		customers = append(customers, customer)
 	}
 	return customers, len(customers), nil
+}
+
+func (repo *CustomerRepository) InsertCustomers(db *sql.DB, req model.InsertCustomerRequest) (*model.Customer, error) {
+	baseQuery := `INSERT INTO CUSTOMER (name, description, enabled) VALUES ($1, $2, $3)
+	RETURNING id, name, description, enabled, created_at, updated_at`
+	row := db.QueryRow(baseQuery, req.Name, req.Description, req.Enabled)
+
+	customer := model.Customer{}
+
+	err := row.Scan(&customer.ID, &customer.Name, &customer.Description, &customer.Enabled, &customer.CreatedAt, &customer.UpdatedAt)
+
+	return &customer, err
+
 }

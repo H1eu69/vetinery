@@ -30,6 +30,12 @@ type GetCustomerRequest struct {
 	PageSize    int    `form:"page_size"`
 }
 
+type InsertCustomerRequest struct {
+	Name        string `form:"name"`
+	Description string `form:"description"`
+	Enabled     bool   `form:"enabled"`
+}
+
 func (req *GetCustomerRequest) Validate() error {
 	if req.Page < 1 {
 		req.Page = _const.DefaultPage
